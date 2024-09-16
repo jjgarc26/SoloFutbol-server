@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import db from "./dbConfig";
 
-async function dbConnection() {
+async function dbConnection(): Promise<DataSource> {
   try {
     const connection = new DataSource(db);
     connection
@@ -12,8 +12,10 @@ async function dbConnection() {
       .finally(() => {
         connection.destroy();
       });
+    return connection;
   } catch (e) {
     console.log(`Error while trying to connect to db: ${e}`);
+    throw e;
   }
 }
 export default dbConnection;
