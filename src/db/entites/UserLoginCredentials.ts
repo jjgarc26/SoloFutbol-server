@@ -3,18 +3,18 @@ import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 @Entity("user_login_credentials")
 export class UserLoginCredentials extends BaseEntity {
   @PrimaryColumn({ type: "text", unique: true })
-  id: string;
+  id!: number;
 
   @Column({ type: "text", unique: true })
-  username: string;
+  username!: string;
 
   @Column({ type: "text" })
-  password: string;
+  password!: string;
 
-  constructor(id: string, username: string, password: string) {
-    super();
-    this.id = id;
-    this.username = username;
-    this.password = password;
-  }
+  // constructor(id: number, username: string, password: string) {
+  //   super();
+  //   this.id = id;
+  //   this.username = username;
+  //   this.password = password;
+  // }
 }

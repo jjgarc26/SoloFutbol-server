@@ -9,6 +9,8 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
-// dbConnection();
+dbConnection.initialize().then(() => {
+  console.log("Data source has been initialized");
+});
 app.use(express.json());
 app.use("/", router);

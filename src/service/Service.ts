@@ -3,26 +3,25 @@ import dbConnection from "../db/dbConnection";
 import { userInformation } from "../utils/types";
 import { DataSource } from "typeorm";
 
-class Service {
-  constructor() {}
+export default class UserService {
+  client: DataSource;
+  
+  constructor() {
+    this.client = dbConnection;
+  }
 
-  async validateUser(
-    firstName: string,
-    lastName: string,
-    username: string,
-    email: string
-  ) {
+  async validateUser(username: string, email: string) {
     try {
-      const client = await dbConnection();
-      const userInfoRepository = client.getRepository(UserInformation);
+      // const client = dbConnection;
+      const userInfoRepository = this.client.getRepository(UserInformation);
       const findUser = await userInfoRepository.findOneBy({
-        first_name: firstName,
-        last_name: lastName,
         username: username,
         email: email,
       });
+
       return findUser;
     } catch (e) {
+      console.error("[Service.ts]: Error occurred in validateUser");
       throw e;
     }
   }
@@ -30,7 +29,6 @@ class Service {
   async createUser(userInformation: userInformation) {
     try {
       const {
-        id,
         first_name,
         middle_name,
         last_name,
@@ -42,14 +40,10 @@ class Service {
       } = userInformation;
       const createUser = new UserInformation();
 
-      const userExist = await this.validateUser(
-        first_name,
-        last_name,
-        username,
-        email
-      );
+      const userExist = await this.validateUser(username, email);
 
       if (userExist) {
+        // update to return correct headers
         return "user already exist";
       }
 
@@ -62,8 +56,10 @@ class Service {
       createUser.email = email;
       createUser.phone_number = phone_number;
       await createUser.save();
+      // update to return correct headers
       return "user has been created";
     } catch (e) {
+      console.error("[Service.ts]: Error occurred in createUser");
       throw e;
     }
   }
